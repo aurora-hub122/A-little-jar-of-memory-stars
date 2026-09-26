@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -7,6 +8,9 @@
     <title>A Little Jar of Memories — Aurora Feng</title>
     <link rel="preload" as="image" href="assets/images/memory-jar.png" fetchpriority="high" />
     <link rel="stylesheet" href="style.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="config.js"></script>
+    <script defer src="shared.js"></script>
   </head>
 
   <body>
@@ -14,7 +18,7 @@
 
     <header class="topbar">
       <a class="brand" href="#jar">Aurora Feng</a>
-      <p><span>private archive</span><i aria-hidden="true">✦</i> eight memories kept close</p>
+      <p><span>a shared little archive</span><i aria-hidden="true">✦</i> ordinary things, quietly treasured</p>
     </header>
 
     <main id="jar">
@@ -50,8 +54,27 @@
           </div>
 
           <p class="jar-caption"><span aria-hidden="true">↳</span> nothing here is ranked, priced, or recommended.</p>
+          <div class="jar-switch" hidden aria-label="Choose a collection">
+            <button type="button" id="aurora-stars" aria-pressed="true">Aurora’s stars</button>
+            <button type="button" id="visitor-stars" aria-pressed="false">Everyone’s stars</button>
+          </div>
+          <div class="shared-pagination" hidden>
+            <button type="button" id="previous-stars" aria-label="Previous stars">←</button>
+            <span id="page-label"></span>
+            <button type="button" id="next-stars" aria-label="Next stars">→</button>
+          </div>
+          <p class="collection-status" id="collection-status" role="status" hidden></p>
         </div>
 
+        <aside class="contribute" hidden>
+          <span class="contribute-note">there is room<br />for your memories, too.</span>
+          <button class="glass-button" id="write-star" type="button" aria-haspopup="dialog">
+            <span class="mini-star" aria-hidden="true">✧</span>
+            <span>leave a little star<small>a memory worth keeping</small></span>
+            <span aria-hidden="true">↗</span>
+          </button>
+          <p>One small thing.<br />A whole story inside.</p>
+        </aside>
         <aside class="little-note little-note--left" aria-hidden="true">things I could<br />not throw away</aside>
         <aside class="little-note little-note--right" aria-hidden="true">collected slowly<br />opened occasionally</aside>
       </section>
@@ -205,5 +228,48 @@
         </div>
       </div>
     </section>
+    <dialog class="star-dialog" id="write-dialog" aria-labelledby="write-title">
+      <button class="dialog-close" type="button" data-close aria-label="Close writing paper">×</button>
+      <form id="star-form" class="folding-paper">
+        <p class="eyebrow">a small piece of your world</p>
+        <h2 id="write-title">What would you keep?</h2>
+        <p class="form-intro">A ticket. A person. An ordinary afternoon.<br />Write it here. We’ll fold it into a star.</p>
+        <div class="form-fields">
+          <label for="star-title">Give your memory a name</label>
+          <input id="star-title" name="title" required maxlength="80" placeholder="The scarf my grandmother knitted" autocomplete="off" />
+          <label for="star-story">The story tucked inside</label>
+          <textarea id="star-story" name="story" required minlength="10" maxlength="3000" rows="5" placeholder="I still keep it because…" aria-describedby="story-count"></textarea>
+          <span class="field-help" id="story-count">0 / 3,000</span>
+          <div class="form-pair">
+            <div><label for="star-author">Signed <span>(optional)</span></label><input id="star-author" name="author" maxlength="40" placeholder="A name, or stay anonymous" autocomplete="off" /></div>
+            <div><label for="star-color">Your paper</label><select id="star-color" name="color"><option value="rose">Blush pink</option><option value="lavender">Lavender</option><option value="sage">Soft sage</option><option value="butter">Butter yellow</option><option value="blue">Cloud blue</option></select></div>
+          </div>
+          <label class="photo-upload" for="star-image">＋ Tuck in a photograph <span>optional · JPG, PNG or WebP · up to 5 MB</span></label>
+          <input id="star-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" />
+          <div class="upload-preview" hidden><img id="image-preview" alt="Your selected photograph" /><button id="remove-image" type="button">Remove photo</button></div>
+          <label class="consent"><input id="share-consent" type="checkbox" required /><span>I’m happy for this story and photograph to be public. I have permission to share them.</span></label>
+          <p class="field-help">You can remove your star from this browser while its visitor session remains saved. Please leave private details off the paper.</p>
+          <div id="captcha"></div>
+        </div>
+        <p id="form-status" class="form-status" role="status"></p>
+        <button type="submit" class="fold-button">Fold &amp; place in the jar <span aria-hidden="true">✧</span></button>
+        <p class="paper-bottom">a little memory, held gently.</p>
+      </form>
+    </dialog>
+
+    <dialog class="star-dialog visitor-dialog" id="visitor-dialog" aria-labelledby="visitor-title">
+      <button class="dialog-close" type="button" data-close aria-label="Close shared memory">×</button>
+      <article class="visitor-letter">
+        <p class="eyebrow">a star someone chose to keep</p>
+        <figure id="visitor-photo" hidden><img alt="Photograph shared with this memory" /></figure>
+        <h2 id="visitor-title"></h2>
+        <p id="visitor-story"></p>
+        <p class="letter-signature" id="visitor-signature"></p>
+        <p id="visitor-date" class="field-help"></p>
+        <div class="visitor-actions"><button type="button" data-close>Tuck it back</button><button type="button" id="delete-star" hidden>Remove my star</button></div>
+        <p id="visitor-status" role="status" class="form-status"></p>
+      </article>
+    </dialog>
+    <noscript><p class="collection-status">Aurora’s eight memories work without JavaScript. Turn it on to write or read shared stars.</p></noscript>
   </body>
 </html>
