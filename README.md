@@ -58,8 +58,6 @@ Visitors can remove their own stars while their anonymous session remains in the
 - `style.css` — the visual design, responsive layout, and CSS-only interactions
 - `shared.js` — shared star interactions and Supabase integration
 - `config.js` — public project URL, publishable key, and optional Turnstile site key
-- `supabase-setup.sql` — database, storage bucket, ownership policies, and submission limits
-- `SHARED-SETUP.md` — owner’s connection and publishing instructions
 - `assets/images` — the jar illustration and photographs used throughout the archive
 
 ## Author
