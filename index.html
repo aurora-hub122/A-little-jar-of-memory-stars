@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -7,6 +6,7 @@
     <meta name="description" content="Aurora Feng's jar of keepsakes and the memories folded inside them." />
     <title>A Little Jar of Memories — Aurora Feng</title>
     <link rel="preload" as="image" href="assets/images/memory-jar.png" fetchpriority="high" />
+    <link rel="preload" as="font" href="assets/fonts/pixelify-sans.ttf" type="font/ttf" crossorigin />
     <link rel="stylesheet" href="style.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script defer src="config.js"></script>
@@ -18,7 +18,7 @@
 
     <header class="topbar">
       <a class="brand" href="#jar">Aurora Feng</a>
-      <p><span>a shared little archive</span><i aria-hidden="true">✦</i> ordinary things, quietly treasured</p>
+      <p><span>a shared little archive</span><i class="foil-star-icon" aria-hidden="true"></i> ordinary things, quietly treasured</p>
     </header>
 
     <main id="jar">
@@ -69,7 +69,7 @@
         <aside class="contribute" hidden>
           <span class="contribute-note">there is room<br />for your memories, too.</span>
           <button class="glass-button" id="write-star" type="button" aria-haspopup="dialog">
-            <span class="mini-star" aria-hidden="true">✧</span>
+            <span class="mini-star" aria-hidden="true"></span>
             <span>leave a little star<small>a memory worth keeping</small></span>
             <span aria-hidden="true">↗</span>
           </button>
@@ -242,7 +242,7 @@
           <span class="field-help" id="story-count">0 / 3,000</span>
           <div class="form-pair">
             <div><label for="star-author">Signed <span>(optional)</span></label><input id="star-author" name="author" maxlength="40" placeholder="A name, or stay anonymous" autocomplete="off" /></div>
-            <div><label for="star-color">Your paper</label><select id="star-color" name="color"><option value="rose">Blush pink</option><option value="lavender">Lavender</option><option value="sage">Soft sage</option><option value="butter">Butter yellow</option><option value="blue">Cloud blue</option></select></div>
+            <div><label for="star-color">Your paper</label><select id="star-color" name="color"><option value="rose">Rose foil</option><option value="lavender">Lilac foil</option><option value="sage">Sage foil</option><option value="butter">Golden foil</option><option value="blue">Blue foil</option></select></div>
           </div>
           <label class="photo-upload" for="star-image">＋ Tuck in a photograph <span>optional · JPG, PNG or WebP · up to 5 MB</span></label>
           <input id="star-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" />
@@ -252,7 +252,7 @@
           <div id="captcha"></div>
         </div>
         <p id="form-status" class="form-status" role="status"></p>
-        <button type="submit" class="fold-button">Fold &amp; place in the jar <span aria-hidden="true">✧</span></button>
+        <button type="submit" class="fold-button">Fold &amp; place in the jar</button>
         <p class="paper-bottom">a little memory, held gently.</p>
       </form>
     </dialog>
