@@ -3,7 +3,7 @@
   "use strict";
   const $ = (selector) => document.querySelector(selector);
   const config = window.STAR_JAR_CONFIG || {};
-  const colors = { rose: "#e4a6ba", lavender: "#bcb0d9", sage: "#b3c9a9", butter: "#ead37f", blue: "#a8c9da" };
+  const colors = { rose: "#ce88a4", lavender: "#bc87ca", sage: "#a3bcad", butter: "#e5bc62", blue: "#a2b6d4" };
   const form = $("#star-form");
   const writeDialog = $("#write-dialog");
   const visitorDialog = $("#visitor-dialog");
@@ -33,7 +33,7 @@
     form.setAttribute("aria-busy", String(value));
     form.querySelectorAll("input, textarea, select, button").forEach(el => { el.disabled = value; });
     writeDialog.querySelector("[data-close]").disabled = value;
-    $(".fold-button").textContent = value ? "Folding your memory…" : "Fold & place in the jar ✧";
+    $(".fold-button").textContent = value ? "Folding your memory…" : "Fold & place in the jar";
   }
   function clearPhoto() {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -166,8 +166,11 @@
         star.setAttribute("aria-label", `Open shared memory: ${row.title}`);
         star.title = row.title;
         const mark = document.createElement("b");
-        mark.textContent = "✧";
+        mark.textContent = String(page * PAGE_SIZE + index + 1).padStart(2, "0");
         star.append(mark);
+        const label = document.createElement("span");
+        label.textContent = row.title;
+        star.append(label);
         star.addEventListener("click", () => openMemory(row));
         $(".star-field").append(star);
       });
