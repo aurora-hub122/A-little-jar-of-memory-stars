@@ -129,38 +129,41 @@
     $("#captcha").hidden = true;
   }
 
-  function showMode(next) {
+  function showMode(next, { latest = false } = {}) {
     mode = next;
     loadVersion++;
     originalStars.forEach(el => { el.hidden = mode !== "aurora"; });
-    document.querySelectorAll(".visitor-star").forEach(el => el.remove());
+    if (mode !== "shared") document.querySelectorAll(".visitor-star").forEach(el => el.remove());
     $("#aurora-stars").setAttribute("aria-pressed", String(mode === "aurora"));
     $("#visitor-stars").setAttribute("aria-pressed", String(mode === "shared"));
     $(".shared-pagination").hidden = true;
     $(".jar-area").setAttribute("aria-label", mode === "aurora" ? "Aurora’s eight memory stars" : "Memory stars shared by visitors");
     $(".jar-heading span").textContent = mode === "aurora" ? "8 memories folded inside" : "memories we keep together";
     collectionStatus("");
-    if (mode === "shared") { page = 0; void loadStars(); }
+    if (mode === "shared") { page = 0; void loadStars({ latest }); }
   }
   $("#aurora-stars").addEventListener("click", () => showMode("aurora"));
   $("#visitor-stars").addEventListener("click", () => showMode("shared"));
   $("#previous-stars").addEventListener("click", () => { if (page > 0) { page--; void loadStars(); } });
   $("#next-stars").addEventListener("click", () => { if ((page + 1) * PAGE_SIZE < total) { page++; void loadStars(); } });
 
-  async function loadStars() {
+  async function loadStars({ latest = false } = {}) {
     const version = ++loadVersion;
-    document.querySelectorAll(".visitor-star").forEach(el => el.remove());
     $(".shared-pagination").hidden = true;
     if (!client) { collectionStatus("The shared jar is waiting to be connected. Aurora’s stars are ready to open."); return; }
     collectionStatus("Finding the little things people kept…");
     try {
       const result = await client.from("memory_stars").select("id,title,story,author,color,image_path,created_at", { count: "exact" })
-        .order("created_at", { ascending: false }).order("id", { ascending: false }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+        .order("created_at", { ascending: true }).order("id", { ascending: true }).range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
       if (version !== loadVersion || mode !== "shared") return;
       if (result.error) throw result.error;
       rows = result.data;
       total = result.count || 0;
+      // Append new memories after older ones; a new upload must not renumber them.
+      const lastPage = Math.max(0, Math.ceil(total / PAGE_SIZE) - 1);
+      if (latest && page !== lastPage) { page = lastPage; return loadStars(); }
       if (!rows.length && page > 0) { page = Math.max(0, Math.ceil(total / PAGE_SIZE) - 1); return loadStars(); }
+      document.querySelectorAll(".visitor-star").forEach(el => el.remove());
       rows.forEach((row, index) => {
         const star = document.createElement("button");
         star.type = "button";
@@ -315,7 +318,7 @@
     writeDialog.close();
     $("#write-star").disabled = true;
     $("#kept-message").textContent = "";
-    showMode("shared");
+    showMode("shared", { latest: true });
     try {
       await foldIntoJar(color);
     } catch (_) {
