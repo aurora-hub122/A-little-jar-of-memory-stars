@@ -7,10 +7,10 @@
     <title>A Little Jar of Memories — Aurora Feng</title>
     <link rel="preload" as="image" href="assets/images/memory-jar.png" fetchpriority="high" />
     <link rel="preload" as="font" href="assets/fonts/pixelify-sans.ttf" type="font/ttf" crossorigin />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=20261005-fold" />
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script defer src="config.js"></script>
-    <script defer src="shared.js"></script>
+    <script defer src="shared.js?v=20261005-fold-order"></script>
   </head>
 
   <body>
@@ -54,6 +54,7 @@
           </div>
 
           <p class="jar-caption"><span aria-hidden="true">↳</span> nothing here is ranked, priced, or recommended.</p>
+          <p class="kept-message" id="kept-message" role="status" aria-live="polite" aria-atomic="true"></p>
           <div class="jar-switch" hidden aria-label="Choose a collection">
             <button type="button" id="aurora-stars" aria-pressed="true">Aurora’s stars</button>
             <button type="button" id="visitor-stars" aria-pressed="false">Everyone’s stars</button>
@@ -113,9 +114,10 @@
           <p class="memory-story">I began learning electronic keyboard at six and continued until thirteen, when I completed Grade 10. My parents did not fill my Saturdays with extra math classes. Instead, every Saturday meant a keyboard lesson, and every week held a little time that belonged to practice. These pages occupied much of my childhood. Their pencil marks—circles, reminders, corrections—now feel almost like handwriting left by a younger version of me. I can still remember the nervous excitement before each public performance. Looking at a score is enough to bring back the stage before the first note. After Grade 10, I wanted to learn the electone, but school became too busy, and that remains a quiet regret. Even now, when I have time, I find a score online and go to a piano room. My hands do not remember everything, but they remember enough.</p>
           <p class="letter-signature">still practicing, Aurora</p>
         </div>
-        <div class="photo-board" aria-label="Piano score photographs">
-          <figure><img loading="lazy" decoding="async" src="assets/images/piano-1.jpg" alt="Old piano score" /><figcaption>marks from childhood</figcaption></figure>
-          <figure><img loading="lazy" decoding="async" src="assets/images/piano-2.jpg" alt="Piano score detail" /><figcaption>before the first note</figcaption></figure>
+        <div class="photo-board photo-board--four" aria-label="Piano memories and an illustrative score">
+          <figure><img loading="lazy" decoding="async" src="assets/images/piano-score-illustration.png" alt="AI-generated illustration of worn piano scores with pencil practice markings" /><figcaption>practice pages</figcaption></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/images/piano-1.jpg" alt="Childhood keyboard memory" /><figcaption>marks from childhood</figcaption></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/images/piano-2.jpg" alt="A memory of learning keyboard" /><figcaption>before the first note</figcaption></figure>
           <figure><img loading="lazy" decoding="async" src="assets/images/piano-3.jpg" alt="Piano memory" /><figcaption>my hands remember</figcaption></figure>
         </div>
       </div>
@@ -203,7 +205,8 @@
           <p class="memory-story">In 2023, I traveled to Europe for a youth study visit. I applied to join the European Youth Event, where I sat with young people from different countries and discussed global questions, including climate change. We also visited the European Parliament. The journey carried me through Belgium, France, and Germany, and gave me a close German friend. Yet one of the smallest moments has stayed most clearly: stepping out of a train station in Belgium for the first time. The space felt wide, clean, and open, and the atmosphere seemed to offer another way of living. I did not know then how far that feeling would travel with me. Looking back, I believe this experience helped shape the choices that eventually brought me to Duke Kunshan University. I keep the wristband because it marks the moment the world became larger—and my own future began to look different.</p>
           <p class="letter-signature">from a wider world, Aurora</p>
         </div>
-        <div class="photo-board" aria-label="Europe Youth Event photographs">
+        <div class="photo-board photo-board--four" aria-label="Europe Youth Event photographs">
+          <figure><img class="keepsake-photo" loading="lazy" decoding="async" src="assets/images/europe-wristbands.jpg" alt="Blue, pink and green event wristbands worn during the Europe visit" /><figcaption>a little piece of that journey</figcaption></figure>
           <figure><img loading="lazy" decoding="async" src="assets/images/europe-1.jpg" alt="European Youth Event photograph" /><figcaption>the world became larger</figcaption></figure>
           <figure><img loading="lazy" decoding="async" src="assets/images/europe-2.jpg" alt="European Parliament visit" /><figcaption>inside the conversation</figcaption></figure>
           <figure><img loading="lazy" decoding="async" src="assets/images/europe-3.jpg" alt="Europe study visit memory" /><figcaption>a direction quietly changed</figcaption></figure>
@@ -221,8 +224,9 @@
           <p class="memory-story">This little ghost belongs to my 2025–2026 year with Campus Activities Board, where I served as an event coordinator. Halloween was one of our largest events, and I helped plan and organize the Chinese haunted house. The days around it were crowded with details: planning the route, building the space, welcoming students, and solving whatever appeared next. What I remember most is not simply that the event succeeded, but the way the team worked. No one disappeared when the work became tiring. People kept noticing what needed to be done and quietly helping one another. At the end of the year, our supervisor asked us to write notes for each other on yellow paper, hidden until later. When I finally read mine, I was deeply moved. The ghost and that note remind me how rare it is to belong to a team that gives its full effort—and how lucky I was to be part of it.</p>
           <p class="letter-signature">for the team that stayed, Aurora</p>
         </div>
-        <div class="photo-board" aria-label="Ghost plush photographs">
-          <figure><img loading="lazy" decoding="async" src="assets/images/ghost-plush.jpg" alt="Halloween ghost plush" /><figcaption>the little ghost</figcaption></figure>
+        <div class="photo-board photo-board--four" aria-label="Ghost plush photographs">
+          <figure><img class="keepsake-photo" loading="lazy" decoding="async" src="assets/images/ghost-keepsakes.jpg" alt="Three white ghost plush toys sitting together on a cream chair" /><figcaption>little ghosts, gently kept</figcaption></figure>
+          <figure><img loading="lazy" decoding="async" src="assets/images/ghost-plush.jpg" alt="A Campus Activities Board event with students gathered around a stage" /><figcaption>an evening we made together</figcaption></figure>
           <figure><img loading="lazy" decoding="async" src="assets/images/ghost-note.jpg" alt="Yellow notes from Campus Activities Board" /><figcaption>words waiting to be read</figcaption></figure>
           <figure><img loading="lazy" decoding="async" src="assets/images/ghost-team.jpg" alt="Campus Activities Board team photograph" /><figcaption>a team that stayed</figcaption></figure>
         </div>

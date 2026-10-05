@@ -12,6 +12,7 @@
   let client, userId, mode = "aurora", page = 0, rows = [], total = 0;
   let selected, previewUrl, busy = false, loadVersion = 0, captchaToken = "", captchaWidget;
   let pendingSubmission; // Keeps a retry id stable if the network loses the reply.
+  let foldingStarId; // The saved star stays tucked away until its entrance finishes.
   let deletionConfirmed = false;
 
   $(".contribute").hidden = false;
@@ -105,6 +106,8 @@
     return captchaPromise;
   }
   $("#write-star").addEventListener("click", async () => {
+    if (busy) return;
+    $("#kept-message").textContent = "";
     writeDialog.showModal();
     if (!client) {
       status("The shared jar is not connected yet. You can try writing here, but your memory cannot be uploaded yet.");
@@ -162,6 +165,8 @@
         const star = document.createElement("button");
         star.type = "button";
         star.className = `paper-star visitor-star star-0${index + 1}`;
+        star.dataset.memoryId = row.id;
+        star.hidden = row.id === foldingStarId;
         star.style.setProperty("--star-color", colors[row.color] || colors.rose);
         star.setAttribute("aria-label", `Open shared memory: ${row.title}`);
         star.title = row.title;
@@ -225,9 +230,9 @@
       await ensureVisitor();
       // First reconcile an uncertain previous request before creating anything else.
       if (pendingSubmission) {
-        const check = await client.from("memory_stars").select("id").eq("id", pendingSubmission.id).maybeSingle();
+        const check = await client.from("memory_stars").select("id,color").eq("id", pendingSubmission.id).maybeSingle();
         if (check.error) throw new Error("We couldn’t confirm your last upload. Please retry when your connection returns.");
-        if (check.data) { finishSubmission(); return; }
+        if (check.data) { await finishSubmission(check.data.color); return; }
         if (pendingSubmission.fingerprint !== fingerprint) {
           if (pendingSubmission.path) await client.storage.from("memory-photos").remove([pendingSubmission.path]);
           pendingSubmission = null;
@@ -257,19 +262,74 @@
         if (result.error.message?.includes("star_limit")) throw new Error("You’ve folded five stars in the past day, or reached this visitor’s 50-star limit. Please return another day.");
         throw new Error("We couldn’t confirm the save. Your words are still here. Please retry; we’ll check for your star before sending it again.");
       }
-      finishSubmission();
+      await finishSubmission(values.color);
     } catch (error) { status(error.message || "Your star couldn’t be saved. Please try again."); }
     finally { setBusy(false); }
   });
-  function finishSubmission() {
+  // A small, one-time thank-you, only after the server confirms the save.
+  async function foldIntoJar(color) {
+    const jar = $(".jar-wrap");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    jar.scrollIntoView({ behavior: "instant", block: "center" });
+    if (reduceMotion) return;
+    const folding = document.createElement("div");
+    folding.className = "memory-fold";
+    folding.setAttribute("aria-hidden", "true");
+    folding.style.setProperty("--fold-color", colors[color] || colors.rose);
+    folding.style.setProperty("--fall-distance", `${jar.clientHeight * .47}px`);
+    const paper = document.createElement("span");
+    paper.className = "memory-fold__paper";
+    for (const side of ["left", "middle", "right"]) {
+      const flap = document.createElement("span");
+      flap.className = `memory-fold__flap memory-fold__flap--${side}`;
+      paper.append(flap);
+    }
+    const star = document.createElement("span");
+    star.className = "memory-fold__star";
+    folding.append(paper, star);
+    jar.classList.add("is-folding");
+    jar.append(folding);
+    try {
+      await new Promise(resolve => {
+        // The timeout also completes in background tabs or if CSS cannot load.
+        const timer = setTimeout(done, 2800);
+        function done() {
+          clearTimeout(timer);
+          star.removeEventListener("animationend", done);
+          resolve();
+        }
+        star.addEventListener("animationend", done, { once: true });
+      });
+    } finally {
+      folding.remove();
+      jar.classList.remove("is-folding");
+    }
+  }
+  async function finishSubmission(color) {
+    foldingStarId = pendingSubmission?.id;
     pendingSubmission = null;
     form.reset();
     clearPhoto();
     $("#story-count").textContent = "0 / 3,000";
     writeDialog.style.removeProperty("--chosen-paper");
     writeDialog.close();
+    $("#write-star").disabled = true;
+    $("#kept-message").textContent = "";
     showMode("shared");
-    collectionStatus("Your star is now in the shared jar. Thank you for leaving a little of your world here.");
+    try {
+      await foldIntoJar(color);
+    } catch (_) {
+      // A decoration must never turn a successful upload into an error/retry.
+    } finally {
+      const finishedStarId = foldingStarId;
+      foldingStarId = undefined;
+      document.querySelectorAll(".visitor-star").forEach(star => {
+        if (star.dataset.memoryId === finishedStarId) star.hidden = false;
+      });
+      $("#write-star").disabled = false;
+      $("#kept-message").textContent = "A little memory, safely kept.";
+      $("#write-star").focus({ preventScroll: true });
+    }
   }
   $("#delete-star").addEventListener("click", async () => {
     if (!selected) return;
