@@ -262,7 +262,7 @@
         star_author: values.author, star_color: values.color, star_image: submission.path
       });
       if (result.error) {
-        if (result.error.message?.includes("star_limit")) throw new Error("You’ve folded five stars in the past day, or reached this visitor’s 50-star limit. Please return another day.");
+        if (result.error.message?.includes("star_limit")) throw new Error("The shared jar still has its old publishing limits. Its owner needs to finish the database update. Your words are still here.");
         throw new Error("We couldn’t confirm the save. Your words are still here. Please retry; we’ll check for your star before sending it again.");
       }
       await finishSubmission(values.color);
